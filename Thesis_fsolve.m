@@ -45,12 +45,12 @@ R_br = f_r*x(4);
 x_ddot_G_B = x_ddot_M_B + x_ddot_G_M - y_G_M*theta_ddot_M-2*y_dot_G_M*theta_dot_M-x_G_M*theta_dot_M^2;
 y_ddot_G_B = y_ddot_M_B + y_ddot_G_M - x_G_M*theta_ddot_M-2*x_dot_G_M*theta_dot_M-y_G_M*theta_dot_M^2;
 % 6 Equations, 6 Unknowns (N_fl,N_fr,N_bl,N_br,q_dot_l,q_dot_r)
-F(1) = x(1) + x(2) + x(3) + x(4) - m*(g + z_ddot_G_B) + F_ext_z;
-F(2) = m*(g + z_ddot_G_B)*(d_m/2 - y_G_M) - pe_z*F_ext_y-F_ext_z*(d_m/2-pe_y)+m*z_G_B*y_ddot_G_B - d_m*(x(2) + x(4));
-F(3) = m*(W_b/2 - x_G_M)*(g + z_ddot_G_B)+m*z_G_B*(x_ddot_G_B) - pe_z*F_ext_x -F_ext_z*(W_b/2 - pe_x) - W_b*(x(4)+x(3));
-F(4) = F_x_fl+F_x_fr+F_x_bl+F_x_br - m*(x_ddot_G_B) - f_r*(m*(g+z_ddot_G_B)-F_ext_z) +F_ext_x;
-F(5) = F_y_fl+F_y_fr+F_y_bl+F_y_br + m*y_ddot_G_B - F_ext_y;
-F(6) = (F_y_fl+F_y_fr)*(W_b/2 - x_G_M) - (F_y_bl+F_y_br)*(W_b/2 + x_G_M) + (F_x_fr+F_x_br-R_fr-R_br)*(d_m/2 + y_G_M)-(F_x_fl+F_x_bl-R_bl-R_fl)*(d_m/2-y_G_M) + F_ext_y*(pe_x - x_G_M) - F_ext_x*(pe_y - y_G_M) - I*theta_ddot_M;
+F(1) = x(1) + x(2) + x(3) + x(4) - m*(g + z_ddot_G_B);
+F(2) = m*(g + z_ddot_G_B)*(d_m/2 - y_G_M)+m*z_G_B*y_ddot_G_B - d_m*(x(2) + x(4));
+F(3) = m*(W_b/2 - x_G_M)*(g + z_ddot_G_B)+m*z_G_B*(x_ddot_G_B) - W_b*(x(4)+x(3));
+F(4) = F_x_fl+F_x_fr+F_x_bl+F_x_br - m*(x_ddot_G_B) - f_r*(m*(g+z_ddot_G_B));
+F(5) = F_y_fl+F_y_fr+F_y_bl+F_y_br + m*y_ddot_G_B;
+F(6) = (F_y_fl+F_y_fr)*(W_b/2 - x_G_M) - (F_y_bl+F_y_br)*(W_b/2 + x_G_M) + (F_x_fr+F_x_br-R_fr-R_br)*(d_m/2 + y_G_M)-(F_x_fl+F_x_bl-R_bl-R_fl)*(d_m/2-y_G_M) - I*theta_ddot_M;
 
 end
 
