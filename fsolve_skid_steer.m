@@ -30,8 +30,16 @@ K = 13.333; f_r = 0.0263; %Liu et al. values
 I = 1/12*118.8437*(0.43^3+0.27^2); m = 118.8437; r = 0.328/2; d_m = 0.56; W_b = 0.52;% VB rough approx.
 g = 9.81; %constant
 
-x_dot_M_B = 0.3;
-theta_dot_M = 0.1;
+%%%%%%%%%%%%%%%%%%
+% Desired velocity
+%%%%%%%%%%%%%%%%%%
+% Note: if getting an error about undefined objective function, try a small
+% non-zero value for both velocity components.
+% It seems pure translation or pure rotation is unachievable.
+x_dot_M_B = 0.001; %0.3;
+theta_dot_M = 0.3; %0.1;
+
+
 fun = @(x) Thesis_fsolve(x);
 N_guess = m*g/4;
 q_l_guess = (2*x_dot_M_B-r*theta_dot_M)/(2*r);
