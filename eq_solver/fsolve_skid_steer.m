@@ -9,7 +9,7 @@ global x_ddot_G_M y_ddot_G_M x_dot_M_B y_dot_M_B x_dot_G_M y_dot_G_M x_G_M
 global y_G_M z_ddot_G_B z_G_B theta_ddot_M theta_dot_M
 
 F_ext_x = 0; F_ext_y = 0; F_ext_z = 0; % external forces (on EEF)
-pe_x = 0; pe_y = 0; pe_z = 0; % EEF positions
+pe_x = 0; pe_y = 0; pe_z = 0; % Relative EEF positions, in case you want to include external forces on the effectors in your mode
 x_ddot_M_B = 0; y_ddot_M_B = 0; % base acceleration
 x_ddot_G_M = 0; y_ddot_G_M = 0; % COM acceleration
 x_dot_M_B = 0; y_dot_M_B = 0; %inputs - base velocity
