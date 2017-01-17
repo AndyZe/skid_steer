@@ -79,7 +79,8 @@ def process_bag( bagName, bagNumber ):
 
   for topic, msg, t in bag.read_messages(topics=['/VB_com']):
       # Store the COM position
-      # TODO: From the bag file, this is in /map (but it should be transformed to /base_link)
+      # This is in /map (but everything else is in /base_link)
+      # However, it doesn't matter b/c the frames are coincident initially
       com_x = msg.point.x
       com_y = msg.point.y
       com_z = msg.point.z
