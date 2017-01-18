@@ -23,8 +23,8 @@ global mu_x mu_y K f_r I m r d_m W_b g
 %Slip velocities
 s_dot_lx = x_dot_M_B - d_m*theta_dot_M/2 - r*x(5);
 s_dot_rx = x_dot_M_B + d_m*theta_dot_M/2 - r*x(6);
-s_dot_fy = y_dot_M_B + (W_b/2)*theta_dot_M;
-s_dot_by = y_dot_M_B - (W_b/2)*theta_dot_M;
+s_dot_fy = y_dot_M_B + W_b/2*theta_dot_M;
+s_dot_by = y_dot_M_B - W_b/2*theta_dot_M;
 
 %Tire friction forces - x
 F_x_fl = -mu_x*x(1)*(1-exp(-K*abs(s_dot_lx)/(1/2*(abs(s_dot_lx+r*x(5))+abs(r*x(5))+abs(abs(s_dot_lx+r*x(5))-abs(r*x(5)))))))*s_dot_lx/sqrt(s_dot_lx^2+s_dot_fy^2);
