@@ -4,7 +4,7 @@
 % Splines are used because we're dealing with different sample rates and
 % signals that need to be differentiated.
 
-delta_t = 0.01;
+global interpolation_delta_t
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Import the COM coordinates
@@ -25,7 +25,7 @@ x_slam = x_y_theta_data(:,2);
 y_slam = x_y_theta_data(:,3);
 theta_slam = x_y_theta_data(:,4);
 
-xytheta_times_to_eval = time_slam(1): delta_t: time_slam(end);
+xytheta_times_to_eval = time_slam(1): interpolation_delta_t: time_slam(end);
 
 x_spline_fxn = spline(time_slam, x_slam);
 x_spline = ppval( x_spline_fxn, xytheta_times_to_eval ); % Evaluate at these points
@@ -72,7 +72,7 @@ time_wheels = wheel_vel_data(:,1);
 l_wheel_vel = wheel_vel_data(:,2);
 r_wheel_vel = wheel_vel_data(:,3);
 
-wheels_times_to_eval = time_wheels(1): delta_t: time_wheels(end);
+wheels_times_to_eval = time_wheels(1): interpolation_delta_t: time_wheels(end);
 
 % Fit with splines for easy interpolation
 l_wheel_vel_spline_fxn = spline(time_wheels, l_wheel_vel);
@@ -95,3 +95,19 @@ max_length = min([length(xytheta_times_to_eval) length(wheels_times_to_eval)]);
 
 xytheta_times_to_eval = xytheta_times_to_eval(1:max_length);
 wheels_times_to_eval = wheels_times_to_eval(1:max_length);
+
+%%%%%%%%
+% Filter
+%%%%%%%%
+alpha=0.5; % higher alpha ==> less smoothing
+x_spline = filter(alpha, [1 1-alpha], x_spline);
+y_spline = filter(alpha, [1 1-alpha], y_spline);
+theta_spline = filter(alpha, [1 1-alpha], theta_spline);
+
+x_dot_spline = filter(alpha, [1 1-alpha], x_dot_spline);
+y_dot_spline = filter(alpha, [1 1-alpha], y_dot_spline);
+theta_dot_spline = filter(alpha, [1 1-alpha], theta_dot_spline);
+
+x_ddot_spline = filter(alpha, [1 1-alpha], x_ddot_spline);
+y_ddot_spline = filter(alpha, [1 1-alpha], y_ddot_spline);
+theta_ddot_spline = filter(alpha, [1 1-alpha], theta_ddot_spline);

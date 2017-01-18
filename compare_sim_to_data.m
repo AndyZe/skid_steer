@@ -6,6 +6,10 @@
 
 clear all; close all; clc
 
+global interpolation_delta_t alpha
+interpolation_delta_t = 0.05;
+alpha=0.5; % higher alpha ==> less smoothing
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Prepare all of the data
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -45,7 +49,7 @@ global left_wheel_vel_sim right_wheel_vel_sim
 %%%%%%%%%%%%%%%%%%%
 for t= 1: length(xytheta_times_to_eval)
     
-    xytheta_times_to_eval(t)
+    disp( strcat( 'Time:  ', num2str(xytheta_times_to_eval(t)) ) )
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Get one time step of data for input to the model
@@ -63,7 +67,7 @@ for t= 1: length(xytheta_times_to_eval)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Run the simulation on this data
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    fsolve_skid_steer   
+    fsolve_skid_steer
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,8 +77,8 @@ end
 % Experimental
 subplot(2,1,1)
 hold on
-plot(wheels_times_to_eval, l_wheel_vel_spline, 'r')
-plot(wheels_times_to_eval, r_wheel_vel_spline, 'b')
+plot(wheels_times_to_eval, l_wheel_vel_spline, 'ro')
+plot(wheels_times_to_eval, r_wheel_vel_spline, 'bo')
 xlabel('Time [s]')
 ylabel('Wheel speed [rad/s]')
 legend('Experimental left wheel speed', 'Experimental right wheel speed')
@@ -82,8 +86,8 @@ legend('Experimental left wheel speed', 'Experimental right wheel speed')
 % Simulated
 subplot(2,1,2)
 hold on
-plot(xytheta_times_to_eval, left_wheel_vel_sim, 'r')
-plot(xytheta_times_to_eval, right_wheel_vel_sim, 'b')
+plot(xytheta_times_to_eval, left_wheel_vel_sim, 'ro')
+plot(xytheta_times_to_eval, right_wheel_vel_sim, 'bo')
 xlabel('Time [s]')
 ylabel('Wheel speed [rad/s]')
 legend('Simulated left wheel speed', 'Simulated right wheel speed')

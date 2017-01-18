@@ -47,7 +47,16 @@ results = fsolve(fun,x0)
 toc
 
 % Save the wheel velocities
-left_wheel_vel_sim = [left_wheel_vel_sim results(5)];
-right_wheel_vel_sim = [right_wheel_vel_sim results(6)];
+% Skip if the solver failed
+if ( abs(results(5)) < 10^2 )
+    left_wheel_vel_sim = [left_wheel_vel_sim results(5)];
+else
+    left_wheel_vel_sim = [left_wheel_vel_sim NaN];
+end
+if ( abs(results(6)) < 10^2 )
+    right_wheel_vel_sim = [right_wheel_vel_sim results(6)];
+else
+    right_wheel_vel_sim = [right_wheel_vel_sim NaN];
+end
 
 
