@@ -6,9 +6,8 @@
 
 clear all; close all; clc
 
-global interpolation_delta_t alpha
-interpolation_delta_t = 0.05;
-alpha=0.5; % higher alpha ==> less smoothing
+global interpolation_delta_t
+interpolation_delta_t = 0.01;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Prepare all of the data
@@ -74,6 +73,7 @@ end
 % Compare the simulated wheel velocities to the wheels vels from data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+figure
 % Experimental
 subplot(2,1,1)
 hold on

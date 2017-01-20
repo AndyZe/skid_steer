@@ -42,20 +42,20 @@ N_guess = m*g/4;
 q_l_guess = (2*x_dot_M_B-r*theta_dot_M)/(2*r);
 q_r_guess = (2*x_dot_M_B+r*theta_dot_M)/(2*r);
 x0 = [N_guess,N_guess,N_guess,N_guess,q_l_guess,q_r_guess]; % Guess
+
+options = optimoptions('fsolve','MaxFunctionEvaluations',1000);
+
 tic
-results = fsolve(fun,x0)
+results = fsolve(fun,x0,options)
 toc
 
 % Save the wheel velocities
 % Skip if the solver failed
-if ( abs(results(5)) < 10^2 )
+if (( abs(results(5)) < 10^2 ) && ( abs(results(6)) < 10^2 ))
     left_wheel_vel_sim = [left_wheel_vel_sim results(5)];
-else
-    left_wheel_vel_sim = [left_wheel_vel_sim NaN];
-end
-if ( abs(results(6)) < 10^2 )
     right_wheel_vel_sim = [right_wheel_vel_sim results(6)];
 else
+    left_wheel_vel_sim = [left_wheel_vel_sim NaN];
     right_wheel_vel_sim = [right_wheel_vel_sim NaN];
 end
 

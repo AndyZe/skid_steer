@@ -55,13 +55,14 @@ y_ddot_spline = ppval( y_ddot_spline_fxn, xytheta_times_to_eval );
 theta_ddot_spline_fxn = fnder( theta_dot_spline_fxn, 1 );
 theta_ddot_spline = ppval( theta_ddot_spline_fxn, xytheta_times_to_eval );
 
-% title('X Position [m]')
-% hold on
-% plot(time_slam, x_slam, 'r')
-% plot(xytheta_times_to_eval, x_spline,'b')
-% plot(xytheta_times_to_eval, x_dot_spline,'c')
-% plot(xytheta_times_to_eval, x_ddot_spline,'g')
-% legend('Original data', 'Spline-interpolated data', 'Spline slope', 'Spline concavity')
+figure
+title('Unfiltered X Position [m]')
+hold on
+plot(time_slam, x_slam, 'r')
+plot(xytheta_times_to_eval, x_spline,'b')
+plot(xytheta_times_to_eval, x_dot_spline,'c')
+plot(xytheta_times_to_eval, x_ddot_spline,'g')
+legend('Original data', 'Spline-interpolated data', 'Spline slope', 'Spline concavity')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % For comparison with the simulation, import and spline the wheel velocity data
@@ -81,13 +82,6 @@ l_wheel_vel_spline = ppval( l_wheel_vel_spline_fxn, wheels_times_to_eval );
 r_wheel_vel_spline_fxn = spline(time_wheels, r_wheel_vel);
 r_wheel_vel_spline = ppval( r_wheel_vel_spline_fxn, wheels_times_to_eval );
 
-% figure
-% hold on
-% title('Left Wheel Speed [rad/s]')
-% plot(time_wheels, l_wheel_vel, 'r')
-% plot(wheels_times_to_eval, l_wheel_vel_spline,'b')
-% legend('Original data', 'Spline-interpolated data')
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Trim the data arrays to the same length
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -95,19 +89,50 @@ max_length = min([length(xytheta_times_to_eval) length(wheels_times_to_eval)]);
 
 xytheta_times_to_eval = xytheta_times_to_eval(1:max_length);
 wheels_times_to_eval = wheels_times_to_eval(1:max_length);
+x_spline = x_spline(1:max_length);
+y_spline = y_spline(1:max_length);
+theta_spline = theta_spline(1:max_length);
+x_dot_spline = x_dot_spline(1:max_length);
+y_dot_spline = y_dot_spline(1:max_length);
+theta_dot_spline = theta_dot_spline(1:max_length);
+x_ddot_spline = x_ddot_spline(1:max_length);
+y_ddot_spline = y_ddot_spline(1:max_length);
+theta_ddot_spline = theta_ddot_spline(1:max_length);
 
 %%%%%%%%
 % Filter
 %%%%%%%%
-alpha=0.5; % higher alpha ==> less smoothing
-x_spline = filter(alpha, [1 1-alpha], x_spline);
-y_spline = filter(alpha, [1 1-alpha], y_spline);
-theta_spline = filter(alpha, [1 1-alpha], theta_spline);
 
-x_dot_spline = filter(alpha, [1 1-alpha], x_dot_spline);
-y_dot_spline = filter(alpha, [1 1-alpha], y_dot_spline);
-theta_dot_spline = filter(alpha, [1 1-alpha], theta_dot_spline);
+x_ddot_spline = lp_filter( x_ddot_spline, xytheta_times_to_eval(end) );
+y_ddot_spline = lp_filter( y_ddot_spline, xytheta_times_to_eval(end) );
+theta_ddot_spline = lp_filter( theta_ddot_spline, xytheta_times_to_eval(end) );
 
-x_ddot_spline = filter(alpha, [1 1-alpha], x_ddot_spline);
-y_ddot_spline = filter(alpha, [1 1-alpha], y_ddot_spline);
-theta_ddot_spline = filter(alpha, [1 1-alpha], theta_ddot_spline);
+figure
+title('Filtered X Position [m]')
+hold on
+plot(time_slam, x_slam, 'r')
+plot(xytheta_times_to_eval, x_spline,'b')
+plot(xytheta_times_to_eval, x_dot_spline,'c')
+plot(xytheta_times_to_eval, x_ddot_spline,'g')
+legend('Original data', 'Spline-interpolated data', 'Spline slope', 'Spline concavity')
+
+% figure
+% hold on
+% title('Left Wheel Speed [rad/s]')
+% plot(time_wheels, l_wheel_vel, 'r')
+% plot(wheels_times_to_eval, l_wheel_vel_spline,'b')
+% legend('Original data', 'Spline-interpolated data')
+
+% % Testing:
+% f_test = 10; % Hz
+% sample_rate = 1000;
+% run_time = 1;
+% for t= 1: run_time*sample_rate
+%     data(t)= sin(2*3.142*f_test*(t/sample_rate));
+% end
+% filtered_data = lp_filter(data, run_time);
+% figure
+% plot(data,'b')
+% hold on
+% plot(filtered_data,'r')
+% legend('Data','Filtered Data')
