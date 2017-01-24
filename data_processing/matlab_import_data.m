@@ -103,6 +103,14 @@ theta_ddot_spline = theta_ddot_spline(1:max_length);
 % Filter
 %%%%%%%%
 
+x_spline = lp_filter( x_dot_spline, xytheta_times_to_eval(end) );
+y_spline = lp_filter( y_dot_spline, xytheta_times_to_eval(end) );
+theta_spline = lp_filter( theta_dot_spline, xytheta_times_to_eval(end) );
+
+x_dot_spline = lp_filter( x_dot_spline, xytheta_times_to_eval(end) );
+y_dot_spline = lp_filter( y_dot_spline, xytheta_times_to_eval(end) );
+theta_dot_spline = lp_filter( theta_dot_spline, xytheta_times_to_eval(end) );
+
 x_ddot_spline = lp_filter( x_ddot_spline, xytheta_times_to_eval(end) );
 y_ddot_spline = lp_filter( y_ddot_spline, xytheta_times_to_eval(end) );
 theta_ddot_spline = lp_filter( theta_ddot_spline, xytheta_times_to_eval(end) );
@@ -123,7 +131,7 @@ legend('Original data', 'Spline-interpolated data', 'Spline slope', 'Spline conc
 % plot(wheels_times_to_eval, l_wheel_vel_spline,'b')
 % legend('Original data', 'Spline-interpolated data')
 
-% % Testing:
+% % Filter Testing:
 % f_test = 10; % Hz
 % sample_rate = 1000;
 % run_time = 1;

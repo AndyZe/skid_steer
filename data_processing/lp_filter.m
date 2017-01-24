@@ -26,6 +26,10 @@ end
 output = zeros(length(input),1);
 
 % Apply the filter
+unfiltered_indices = [1:5 length(input)-4:length(input)];
+for i= unfiltered_indices
+    output(i) = input(i);
+end
 for i= 5 : length(input)-4 % Let the first few datapts go
     
     output(i) = inCoeffs(1)*input(i) +inCoeffs(2)*input(i-1) +inCoeffs(3)*input(i-2) +...
