@@ -103,9 +103,9 @@ theta_ddot_spline = theta_ddot_spline(1:max_length);
 % Filter
 %%%%%%%%
 
-x_spline = lp_filter( x_spline, xytheta_times_to_eval(end) );
-y_spline = lp_filter( y_spline, xytheta_times_to_eval(end) );
-theta_spline = lp_filter( theta_spline, xytheta_times_to_eval(end) );
+x_spline = lp_filter( x_dot_spline, xytheta_times_to_eval(end) );
+y_spline = lp_filter( y_dot_spline, xytheta_times_to_eval(end) );
+theta_spline = lp_filter( theta_dot_spline, xytheta_times_to_eval(end) );
 
 x_dot_spline = lp_filter( x_dot_spline, xytheta_times_to_eval(end) );
 y_dot_spline = lp_filter( y_dot_spline, xytheta_times_to_eval(end) );
