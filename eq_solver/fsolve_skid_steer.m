@@ -25,10 +25,8 @@ global y_G_M z_ddot_G_B z_G_B theta_ddot_M theta_dot_M
 %%%%%%%%%%%%
 % Parameters
 %%%%%%%%%%%%
-global mu_x mu_y K f_r I m r d_m W_b g
+global I m r d_m W_b g
 
-mu_x = 0.9; mu_y = 0.9; %Liu et al. values
-K = 13.333; f_r = 0.0263; %Liu et al. values
 I = 1/12*118.8437*(0.43^3+0.27^2); m = 118.8437; r = 0.328/2; d_m = 0.56; W_b = 0.52;% VB rough approx.
 g = 9.81; %constant
 

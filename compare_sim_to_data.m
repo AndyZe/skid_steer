@@ -1,4 +1,4 @@
-function [ SSE ] = compare_sim_to_data( cutoff_frequency )
+function [ SSE, num_samples ] = compare_sim_to_data( cutoff_freq_input, mu_x_input, mu_y_input, K_input, f_r_input )
 % 4-th Order Butterworth LPF and differentiator
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -8,9 +8,14 @@ function [ SSE ] = compare_sim_to_data( cutoff_frequency )
 % By calculating the SSE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-global interpolation_delta_t cutoff_freq
+global interpolation_delta_t cutoff_freq mu_x mu_y
+global K f_r
 interpolation_delta_t = 0.01;
-cutoff_freq = cutoff_frequency;
+cutoff_freq = cutoff_freq_input;
+mu_x = mu_x_input;
+mu_y = mu_y_input;
+K = K_input;
+f_r = f_r_input;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Prepare all of the data
@@ -79,7 +84,7 @@ end
 % Calculate SSE for all data points
 SSE = 0;
 % For every simulation datapoint
-for i=1:length(left_wheel_vel_sim)
+for i=1:length(wheels_times_to_eval)
     if ( isfinite(left_wheel_vel_sim(i))) % Skip the many NaN's
     
         % Get the wheel velocity at this time
@@ -87,6 +92,8 @@ for i=1:length(left_wheel_vel_sim)
         SSE = SSE + ( left_wheel_vel_sim(i)-l_wheel_vel_exp )^2;
     end
 end
+
+num_samples = length(wheels_times_to_eval);
 
 figure
 % Experimental
@@ -101,8 +108,8 @@ legend('Experimental left wheel speed', 'Experimental right wheel speed')
 % Simulated
 subplot(2,1,2)
 hold on
-plot(xytheta_times_to_eval, left_wheel_vel_sim, 'ro')
-plot(xytheta_times_to_eval, right_wheel_vel_sim, 'bo')
+plot(wheels_times_to_eval, left_wheel_vel_sim, 'ro')
+plot(wheels_times_to_eval, right_wheel_vel_sim, 'bo')
 xlabel('Time [s]')
 ylabel('Wheel speed [rad/s]')
 legend('Simulated left wheel speed', 'Simulated right wheel speed')

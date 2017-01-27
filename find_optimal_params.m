@@ -7,20 +7,44 @@ clear all; close all; clc
 % K     (From Liu et al.) (centered around 13.333)
 % f_r   (From Liu et al.) (centered around 0.0263)
 
-% The best parameter set will return the lowest SSE
-SSE= [];
-for (cutoff_freq = 0.1:0.2:10)
+% TODO: Don't need to run 'matlab_import_data' at every timestep
+% TODO: Could disable plotting with a function input
+
+% The best parameter set will return the lowest variance
+results = [];
+row = 1;
+SSE = 0;
+variance = 0;
+
+for (cutoff_freq = 0.1:0.2:0.5:10)
     for (mu_x = 0.1:0.05:1)
         for (mu_y = 0.1:0.05:1)
             for (K = 5:0.5:20)
-                for (f_r = 0.005 : 0.005 : 0.06)
-
-                    % Store all the SSE values for plotting
-                    %function [ SSE ] = compare_sim_to_data( cutoff_frequency )
-                    SSE = [SSE compare_sim_to_data(2)];
-
+                for (f_r = 0.005 : 0.005 :0.06)
+                    row % Track which iteration we're on
+                    
+                    % Store the parameters and variance for plotting
+                    %function [ variance ] = compare_sim_to_data( cutoff_frequency )
+                    [SSE num_samples] = compare_sim_to_data(cutoff_freq, mu_x, mu_y, K, f_r);
+                    variance = SSE/num_samples;
+                    results(row,:) = [cutoff_freq mu_x mu_y K f_r num_samples variance];
+                    
+                    row = row+1;
+                    clearvars -global;
+                    clearvars -except results row cutoff_freq mu_x mu_y K f_r;
+                    close all; clc
                 end
             end
         end
     end
 end
+
+% The best: smallest variance with at least X datapoints
+[min_variance, min_index] = min(results(:,7));
+best_results = results(min_index, :)
+
+% Run it one more time to see the best results
+% We're pulling these inputs from the "best row" of 'results'
+compare_sim_to_data( best_results(1), best_results(2), best_results(3), best_results(4), best_results(5));
+
+
