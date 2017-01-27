@@ -1,13 +1,16 @@
+function [ SSE ] = compare_sim_to_data( cutoff_frequency )
+% 4-th Order Butterworth LPF and differentiator
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Get a set of data
+% Get a set of data given a set of parameters
 % Run the skid_steer simulation on this data
 % Compare the simulated wheel velocities to the wheels vels from data
+% By calculating the SSE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-clear all; close all; clc
-
-global interpolation_delta_t
+global interpolation_delta_t cutoff_freq
 interpolation_delta_t = 0.01;
+cutoff_freq = cutoff_frequency;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Prepare all of the data
@@ -72,6 +75,18 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Compare the simulated wheel velocities to the wheels vels from data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Calculate SSE for all data points
+SSE = 0;
+% For every simulation datapoint
+for i=1:length(left_wheel_vel_sim)
+    if ( isfinite(left_wheel_vel_sim(i))) % Skip the many NaN's
+    
+        % Get the wheel velocity at this time
+        l_wheel_vel_exp = ppval( l_wheel_vel_spline_fxn, wheels_times_to_eval(i) );
+        SSE = SSE + ( left_wheel_vel_sim(i)-l_wheel_vel_exp )^2;
+    end
+end
 
 figure
 % Experimental

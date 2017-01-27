@@ -1,9 +1,11 @@
 function [ output ] = lp_filter( input, run_time )
 % 4-th Order Butterworth LPF
 
+global cutoff_freq
+
 Ts = run_time/length(input);
 A_fc = 2;           % cutoff freq
-[an,ad] = butter(4, A_fc*2*pi, 's'); % Generate filter coefficients
+[an,ad] = butter(4, cutoff_freq*2*pi, 's'); % Generate filter coefficients
 Q_A = tf(an,ad);    %LPF transfer function
 Afilt = tf(1,1) * Q_A;  %Do not multiply by s ==> no derivative
 

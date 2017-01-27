@@ -43,7 +43,7 @@ q_l_guess = (2*x_dot_M_B-r*theta_dot_M)/(2*r);
 q_r_guess = (2*x_dot_M_B+r*theta_dot_M)/(2*r);
 x0 = [N_guess,N_guess,N_guess,N_guess,q_l_guess,q_r_guess]; % Guess
 
-options = optimoptions('fsolve','MaxFunctionEvaluations',1000);
+options = optimoptions('fsolve','MaxFunctionEvaluations',1000,'Display','none');
 
 tic
 results = fsolve(fun,x0,options)

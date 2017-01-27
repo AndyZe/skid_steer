@@ -30,39 +30,12 @@ xytheta_times_to_eval = time_slam(1): interpolation_delta_t: time_slam(end);
 x_spline_fxn = spline(time_slam, x_slam);
 x_spline = ppval( x_spline_fxn, xytheta_times_to_eval ); % Evaluate at these points
 
-x_dot_spline_fxn = fnder( x_spline_fxn, 1 ); % Derivative
-x_dot_spline = ppval( x_dot_spline_fxn, xytheta_times_to_eval );
-
 y_spline_fxn = spline(time_slam, y_slam);
 y_spline = ppval( y_spline_fxn, xytheta_times_to_eval );
-
-y_dot_spline_fxn = fnder( y_spline_fxn, 1 );
-y_dot_spline = ppval( y_dot_spline_fxn, xytheta_times_to_eval );
 
 theta_spline_fxn = spline(time_slam, theta_slam);
 theta_spline = ppval( theta_spline_fxn, xytheta_times_to_eval );
 
-theta_dot_spline_fxn = fnder( theta_spline_fxn, 1 );
-theta_dot_spline = ppval( theta_dot_spline_fxn, xytheta_times_to_eval );
-
-% 2nd derivatives
-x_ddot_spline_fxn = fnder( x_dot_spline_fxn, 1 );
-x_ddot_spline = ppval( x_ddot_spline_fxn, xytheta_times_to_eval );
-
-y_ddot_spline_fxn = fnder( y_dot_spline_fxn, 1 );
-y_ddot_spline = ppval( y_ddot_spline_fxn, xytheta_times_to_eval );
-
-theta_ddot_spline_fxn = fnder( theta_dot_spline_fxn, 1 );
-theta_ddot_spline = ppval( theta_ddot_spline_fxn, xytheta_times_to_eval );
-
-figure
-title('Unfiltered X Position [m]')
-hold on
-plot(time_slam, x_slam, 'r')
-plot(xytheta_times_to_eval, x_spline,'b')
-plot(xytheta_times_to_eval, x_dot_spline,'c')
-plot(xytheta_times_to_eval, x_ddot_spline,'g')
-legend('Original data', 'Spline-interpolated data', 'Spline slope', 'Spline concavity')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % For comparison with the simulation, import and spline the wheel velocity data
@@ -82,6 +55,22 @@ l_wheel_vel_spline = ppval( l_wheel_vel_spline_fxn, wheels_times_to_eval );
 r_wheel_vel_spline_fxn = spline(time_wheels, r_wheel_vel);
 r_wheel_vel_spline = ppval( r_wheel_vel_spline_fxn, wheels_times_to_eval );
 
+%%%%%%%%
+% Filter
+%%%%%%%%
+
+x_spline = lp_filter( x_spline, xytheta_times_to_eval(end) );
+y_spline = lp_filter( y_spline, xytheta_times_to_eval(end) );
+theta_spline = lp_filter( theta_spline, xytheta_times_to_eval(end) );
+
+x_dot_spline = lp_filter_deriv( x_spline, xytheta_times_to_eval(end) );
+y_dot_spline = lp_filter_deriv( y_spline, xytheta_times_to_eval(end) );
+theta_dot_spline = lp_filter_deriv( theta_spline, xytheta_times_to_eval(end) );
+
+x_ddot_spline = lp_filter_deriv( x_dot_spline, xytheta_times_to_eval(end) );
+y_ddot_spline = lp_filter_deriv( y_dot_spline, xytheta_times_to_eval(end) );
+theta_ddot_spline = lp_filter_deriv( theta_dot_spline, xytheta_times_to_eval(end) );
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Trim the data arrays to the same length
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,21 +88,9 @@ x_ddot_spline = x_ddot_spline(1:max_length);
 y_ddot_spline = y_ddot_spline(1:max_length);
 theta_ddot_spline = theta_ddot_spline(1:max_length);
 
-%%%%%%%%
-% Filter
-%%%%%%%%
-
-x_spline = lp_filter( x_spline, xytheta_times_to_eval(end) );
-y_spline = lp_filter( y_spline, xytheta_times_to_eval(end) );
-theta_spline = lp_filter( theta_spline, xytheta_times_to_eval(end) );
-
-x_dot_spline = lp_filter( x_dot_spline, xytheta_times_to_eval(end) );
-y_dot_spline = lp_filter( y_dot_spline, xytheta_times_to_eval(end) );
-theta_dot_spline = lp_filter( theta_dot_spline, xytheta_times_to_eval(end) );
-
-x_ddot_spline = lp_filter( x_ddot_spline, xytheta_times_to_eval(end) );
-y_ddot_spline = lp_filter( y_ddot_spline, xytheta_times_to_eval(end) );
-theta_ddot_spline = lp_filter( theta_ddot_spline, xytheta_times_to_eval(end) );
+%%%%%%%
+% Plots
+%%%%%%%
 
 figure
 title('Filtered X Position [m]')
@@ -131,7 +108,9 @@ legend('Original data', 'Spline-interpolated data', 'Spline slope', 'Spline conc
 % plot(wheels_times_to_eval, l_wheel_vel_spline,'b')
 % legend('Original data', 'Spline-interpolated data')
 
+%%%%%%%%%%%%%%%%%%%
 % % Filter Testing:
+%%%%%%%%%%%%%%%%%%%
 % f_test = 10; % Hz
 % sample_rate = 1000;
 % run_time = 1;
