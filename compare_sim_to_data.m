@@ -10,7 +10,7 @@ function [ SSE, num_samples ] = compare_sim_to_data( cutoff_freq_input, mu_x_inp
 
 global interpolation_delta_t cutoff_freq mu_x mu_y
 global K f_r
-interpolation_delta_t = 0.01;
+interpolation_delta_t = 0.02;
 cutoff_freq = cutoff_freq_input;
 mu_x = mu_x_input;
 mu_y = mu_y_input;
@@ -56,7 +56,7 @@ global left_wheel_vel_sim right_wheel_vel_sim
 %%%%%%%%%%%%%%%%%%%
 for t= 1: length(xytheta_times_to_eval)
     
-    disp( strcat( 'Time:  ', num2str(xytheta_times_to_eval(t)) ) )
+    %disp( strcat( 'Time:  ', num2str(xytheta_times_to_eval(t)) ) )
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Get one time step of data for input to the model

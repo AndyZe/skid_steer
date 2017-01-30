@@ -16,12 +16,12 @@ row = 1;
 SSE = 0;
 variance = 0;
 
-for (cutoff_freq = 0.1:0.2:0.5:10)
-    for (mu_x = 0.1:0.05:1)
-        for (mu_y = 0.1:0.05:1)
-            for (K = 5:0.5:20)
-                for (f_r = 0.005 : 0.005 :0.06)
-                    row % Track which iteration we're on
+for (cutoff_freq = 0.1:1:6)
+    for (mu_x = 0.3 : 0.2 :1 )
+        for (mu_y = 0.3 : 0.2 :1 )
+            for (K = 5:2:20)
+                for (f_r = 0.005 : 0.02 :0.06)
+                    disp( [row 8400] ) % Display which iteration we're on
                     
                     % Store the parameters and variance for plotting
                     %function [ variance ] = compare_sim_to_data( cutoff_frequency )
@@ -46,5 +46,7 @@ best_results = results(min_index, :)
 % Run it one more time to see the best results
 % We're pulling these inputs from the "best row" of 'results'
 compare_sim_to_data( best_results(1), best_results(2), best_results(3), best_results(4), best_results(5));
+
+save('results.mat')
 
 
