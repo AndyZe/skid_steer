@@ -1,5 +1,13 @@
 clear all; close all; clc
 
+% If we want to skip through data quickly
+% Else, set skip_to_index to zero
+skip_to_index = 1;
+skip_this_many = 100;
+
+% If wanted, set the accelerations to 0. (They're noisy)
+zero_accels = true;
+
 % Store reasonably-good parameter sets here
 reasonably_good = [];
 
@@ -13,7 +21,10 @@ sorted_results = results;
 reply = 'y';
 
 while ( reply=='y' || reply=='Y' )
-    close all; clearvars -except sorted_results reasonably_good; clearvars -global
+       
+    close all;
+    clearvars -except skip_to_index skip_this_many zero_accels sorted_results reasonably_good;
+    clearvars -global
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Start plotting the dataset with the least error.
@@ -24,6 +35,13 @@ while ( reply=='y' || reply=='Y' )
     
     % Row with least variance
     [min_variance, min_index] = min(sorted_results(:,7));
+    
+    % Quickly skip through?
+    if (skip_to_index)
+        skip_to_index = skip_to_index + skip_this_many;
+        min_index = skip_to_index;
+    end
+    
     best_results = sorted_results(min_index, :)
     
     % Remove this row from the large results matrix
@@ -33,8 +51,11 @@ while ( reply=='y' || reply=='Y' )
     % Skip the ridiculously small errors caused by just a few datapoints
     if ( best_results(7) > 0.5 )
         
-        % Plot
-        compare_sim_to_data( best_results(1), best_results(2), best_results(3), best_results(4), best_results(5));
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Plot against experimental data
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        compare_sim_to_data( best_results(1), best_results(2), best_results(3), best_results(4), best_results(5), zero_accels );
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % After plotting, ask the user if it looks OK.

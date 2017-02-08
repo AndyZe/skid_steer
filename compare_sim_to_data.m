@@ -1,4 +1,4 @@
-function [ SSE, num_samples ] = compare_sim_to_data( cutoff_freq_input, mu_x_input, mu_y_input, K_input, f_r_input )
+function [ SSE, num_samples ] = compare_sim_to_data( cutoff_freq_input, mu_x_input, mu_y_input, K_input, f_r_input, zero_accels )
 % 4-th Order Butterworth LPF and differentiator
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -61,14 +61,22 @@ for t= 1: length(xytheta_times_to_eval)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Get one time step of data for input to the model
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    x_ddot_M_B = x_ddot_spline(t);    y_ddot_M_B = y_ddot_spline(t);
+    
+    if (zero_accels) % If we want to set the noisy acceleration to 0
+        x_ddot_M_B = 0;
+        y_ddot_M_B = 0;
+        theta_ddot_M = 0;
+    else
+        x_ddot_M_B = x_ddot_spline(t);
+        y_ddot_M_B = y_ddot_spline(t);
+        theta_ddot_M = theta_ddot_spline(t);        
+    end
     x_ddot_G_M = 0;   y_ddot_G_M = 0; % The arms aren't moving so the COM doesn't move wrt the base
     x_dot_M_B = x_dot_spline(t);    y_dot_M_B = y_dot_spline(t);
     x_dot_G_M = 0;   y_dot_G_M = 0; % The arms aren't moving so the COM doesn't move wrt the base
     x_G_M = x_com;      y_G_M = y_com;
     z_ddot_G_B = 0; % Assuming the platform stays in the plane. The /slam_out_pose data shows z=0
     z_G_B = 0.35;
-    theta_ddot_M = theta_ddot_spline(t);
     theta_dot_M = theta_dot_spline(t);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,9 +85,9 @@ for t= 1: length(xytheta_times_to_eval)
     fsolve_skid_steer
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Compare the simulated wheel velocities to the wheels vels from data
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compare the simulated wheel velocities to the wheel vels from data
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Calculate SSE for all data points
 SSE = 0;
@@ -107,6 +115,7 @@ legend('Experimental left wheel speed', 'Experimental right wheel speed')
 
 % Simulated
 subplot(2,1,2)
+axis([0 7.5 -2 4])
 hold on
 plot(wheels_times_to_eval, left_wheel_vel_sim, 'ro')
 plot(wheels_times_to_eval, right_wheel_vel_sim, 'bo')

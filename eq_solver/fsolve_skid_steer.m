@@ -27,7 +27,7 @@ global y_G_M z_ddot_G_B z_G_B theta_ddot_M theta_dot_M
 %%%%%%%%%%%%
 global I m r d_m W_b g
 
-I = 1/12*118.8437*(0.43^3+0.27^2); m = 118.8437; r = 0.328/2; d_m = 0.56; W_b = 0.52;% VB rough approx.
+I = (1/12)*118.8437*(0.43^3+0.27^3); m = 118.8437; r = 0.328/2; d_m = 0.56; W_b = 0.52;% VB rough approx.
 g = 9.81; %constant
 
 %%%%%%%%%%%%%%%%%
